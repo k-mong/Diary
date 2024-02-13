@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserRequestDto {   // 클라이언트에게 받을 값
+public class UserInfoDto {   // 클라이언트에게 받을 값
 
     private String email;
     private String password;
