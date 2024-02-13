@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)  // csrf 보호 비활성화 (Cross Site Request Forgery 공격)
                 .cors(Customizer.withDefaults())    // cors 기본설정(외부에서 다른 사용자가 요청하는것)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 세선고정보호?
+                // 세선고정보호? (이 위로는 기본적으로 고정 jwt 사용을위한 설정)
                 .authorizeRequests( // 특정 url 에대한 권한 설정
                         authorize -> authorize
                                 .requestMatchers("/swagger-ui/**","/user/**").permitAll()); // 모두 허용
