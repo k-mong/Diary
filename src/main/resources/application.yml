@@ -1,7 +1,9 @@
 spring:
   jpa:
     hibernate:
-      dda-auto: create
+      ddl-auto: create
+      #3.x 부터 설정파일에서 제거 use-new-id-generator-mappings: false
+    show-sql: true
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
