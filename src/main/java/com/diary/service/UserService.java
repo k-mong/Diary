@@ -25,7 +25,7 @@ public class UserService {
         User user = userRepository.save(    // spa 의 기본기능 save  ?여기에 변수명 왜 했는지 물어보기
                 User.builder()  // 객체생성
                         .email(userJoinRequestDto.getEmail())   // email 은 매개변수로 들어온 email
-                        .password(userJoinRequestDto.getPassword())
+                        .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
                         .name(userJoinRequestDto.getName())
                         .phone(userJoinRequestDto.getPhone())
                         .build());
