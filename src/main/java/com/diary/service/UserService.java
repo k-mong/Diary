@@ -50,4 +50,13 @@ public class UserService {
         return "로그인 성공!";
     }
 
+    /**
+     * user 정보 가져오기
+     * @param userId
+     * @return
+     */
+    public Optional<User> findUserInfo(String userId) {
+        return userRepository.findByEmail(userId);
+    }
+
 }
