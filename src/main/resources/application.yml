@@ -11,6 +11,7 @@ spring:
     username: root
     password: 12345678
 
+
 logging:
   level:
     org.hibernate.SQL: debug
@@ -20,3 +21,6 @@ logging:
 
 jwt:
   secret: 49bc0951089d29e51dc801fa1af561d4c54d9982c764f63885c30b5ee1b57b25ad4177dbb5c2febd0bcb320758c46757b69d2b2bf15c36e734265d8e82e5509a
+
+weather:
+  api-key: 6db775c32a4572ce9f7a377cad18146c

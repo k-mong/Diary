@@ -29,8 +29,8 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("getMyInfo")
-    public ResponseEntity<User> getMyInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+    @GetMapping("/getMyInfo")
+    public ResponseEntity<User> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
         // 유요성 체크
         if(!tokenProvider.checkValidToken(token)) {
             throw new RuntimeException("토큰이 만료되었습니다.");
