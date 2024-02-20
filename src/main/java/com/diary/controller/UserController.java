@@ -6,6 +6,7 @@ import com.diary.dto.UserInfoDto;
 import com.diary.security.TokenProvider;
 import com.diary.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginDto userLoginDto) {
         String result = userService.login(userLoginDto);
-        return ResponseEntity.ok(result);
+        String token = tokenProvider.generationToken(userLoginDto);
+        return ResponseEntity.ok(result + token);
     }
 
     @GetMapping("/getMyInfo")
@@ -37,6 +39,9 @@ public class UserController {
         }
         String userId = tokenProvider.getUserId(token);
         User user = userService.findUserInfo(userId).get();
+        System.out.println("userId" + userId);
+        System.out.println("user" + user);
+        System.out.println("token"+token);
 
         return ResponseEntity.ok(user);
     }
