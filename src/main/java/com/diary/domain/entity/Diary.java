@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Board {
+public class Diary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,6 @@ public class Board {
 
     public void setUser(User user) {
         this.user = user;
-        user.getBoards().add(this);
+        user.getDiaries().add(this);
     }
 }

@@ -56,7 +56,9 @@ public class UserService {
      * @return
      */
     public Optional<User> findUserInfo(String userId) {
-        return userRepository.findByEmail(userId);
+        Optional<User> user = userRepository.findByEmail(userId);
+        System.out.println("findUserInfo 메서드 실행 "+user);
+        return user;
     }
 
 }

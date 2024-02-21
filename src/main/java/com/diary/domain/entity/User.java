@@ -30,6 +30,6 @@ public class User {
     private String phone;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Board> boards = new ArrayList<>();
+    private List<Diary> diaries = new ArrayList<>();
 
 }
