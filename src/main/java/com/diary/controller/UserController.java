@@ -1,12 +1,12 @@
 package com.diary.controller;
 
 import com.diary.domain.entity.User;
+import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
 import com.diary.dto.UserInfoDto;
 import com.diary.security.TokenProvider;
 import com.diary.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,18 +32,21 @@ public class UserController {
     }
 
     @GetMapping("/getMyInfo")
-    public ResponseEntity<User> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+    public ResponseEntity<UserInfoResponseDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
         // 유요성 체크
         if(!tokenProvider.checkValidToken(token)) {
             throw new RuntimeException("토큰이 만료되었습니다.");
         }
         String userId = tokenProvider.getUserId(token);
         User user = userService.findUserInfo(userId).get();
-        System.out.println("userId" + userId);
-        System.out.println("user" + user);
-        System.out.println("token"+token);
 
-        return ResponseEntity.ok(user);
+        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .build();
+
+        return ResponseEntity.ok(userInfoResponseDto);
     }
 
 }

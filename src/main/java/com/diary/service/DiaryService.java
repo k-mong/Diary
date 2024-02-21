@@ -1,6 +1,6 @@
 package com.diary.service;
 
-import com.diary.domain.entity.Board;
+import com.diary.domain.entity.Diary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class DiaryService {
     private final OpenApiService openApiService;
 
-    public Board createDiary(String area) {
+    public Diary createDiary(String area) {
         // 1. 날씨정보 갖고오기
         // 1-1 이미 있는지 확인
         // 1-2 없을경우, 저장 후 가져오기
