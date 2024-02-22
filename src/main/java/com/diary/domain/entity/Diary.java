@@ -1,13 +1,12 @@
 package com.diary.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
-@Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -25,8 +24,16 @@ public class Diary {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void setUser(User user) {
-        this.user = user;
-        user.getDiaries().add(this);
+    private LocalDate date;
+    private String icon;
+    private String weather;
+    private double temp;
+
+    public void seatDateInfo(Weather weather) {
+        this.weather = weather.getWeather();
+        this.icon = weather.getIcon();
+        this.temp = weather.getTemp();
+        this.date = weather.getDate();
     }
+
 }
