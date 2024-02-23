@@ -1,7 +1,5 @@
 package com.diary.controller;
 
-import com.diary.domain.entity.User;
-import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
 import com.diary.dto.UserInfoDto;
 import com.diary.security.TokenProvider;
@@ -32,21 +30,21 @@ public class UserController {
     }
 
     @GetMapping("/getMyInfo")
-    public ResponseEntity<UserInfoResponseDto> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+    public ResponseEntity<String> getUserInfo(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
         // 유요성 체크
         if(!tokenProvider.checkValidToken(token)) {
             throw new RuntimeException("토큰이 만료되었습니다.");
         }
         String userId = tokenProvider.getUserId(token);
-        User user = userService.findUserInfo(userId).get();
+//        User user = userService.findUserInfo(userId).get();
 
-        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .phone(user.getPhone())
-                .build();
+//        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
+//                .email(user.getEmail())
+//                .name(user.getName())
+//                .phone(user.getPhone())
+//                .build();
 
-        return ResponseEntity.ok(userInfoResponseDto);
+        return ResponseEntity.ok(userId);
     }
 
 }
