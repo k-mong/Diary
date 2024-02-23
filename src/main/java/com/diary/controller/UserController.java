@@ -1,9 +1,9 @@
 package com.diary.controller;
 
 import com.diary.domain.entity.User;
+import com.diary.dto.UserInfoDto;
 import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
-import com.diary.dto.UserInfoDto;
 import com.diary.security.TokenProvider;
 import com.diary.service.UserService;
 import lombok.RequiredArgsConstructor;

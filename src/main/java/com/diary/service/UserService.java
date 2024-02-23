@@ -2,8 +2,8 @@ package com.diary.service;
 
 import com.diary.domain.entity.User;
 import com.diary.domain.repository.UserRepository;
-import com.diary.dto.UserLoginDto;
 import com.diary.dto.UserInfoDto;
+import com.diary.dto.UserLoginDto;
 import com.diary.exception.CustomException;
 import com.diary.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
