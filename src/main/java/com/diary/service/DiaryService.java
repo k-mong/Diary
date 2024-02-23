@@ -65,6 +65,7 @@ public class DiaryService {
                             .weather(weather.getWeather())
                             .user(user)
                             .build());
+
         }
 
     }
