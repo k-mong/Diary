@@ -7,10 +7,11 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Diary {
+public class Diary extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +29,7 @@ public class Diary {
     private String icon;
     private String weather;
     private double temp;
+
 
     public void seatDateInfo(Weather weather) {
         this.weather = weather.getWeather();
