@@ -78,16 +78,6 @@ public class DiaryService {
         weather.setWeather(weatherInfo.get("main").toString());
         return weather;
 
-        // 1-2 없을경우, 저장 후 가져오기
-        if(weatherRepository.findTop1ByDateAndAreaDesc(LocalDate.now(), diaryInfoDto.getArea())) {
-
-        } else {
-            User user = userRepository.findByEmail(diaryInfoDto.getUser_id()).get();
-
-            Diary diary = new Diary();
-
-
-        }
 
     }
 }
