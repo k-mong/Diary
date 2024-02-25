@@ -49,7 +49,9 @@ public class DiaryService {
 
         // 1-1 이미 있는지 확인
 
-        if(weatherRepository.findTop1ByDateAndWeatherOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea())) {
+
+        if(weatherRepository.findTop1ByDateAndWeatherOrderByDateDesc(LocalDate.now(), weather.getWeather())) {  // 이 부분에서 문제
+
             throw new RuntimeException("날씨정보가 이미 있습니다.");
         } else {
             // 1-2 없을경우, 저장 후 가져오기
@@ -70,12 +72,19 @@ public class DiaryService {
     }
 
     public Weather getWeatherInfo (DiaryInfoDto diaryInfoDto) {
-        HashMap<String, Object> weatherInfo = openApiService.jsonParseString(diaryInfoDto.getArea());
+        System.out.println("getWeatherInfo 실행!!");
+
+        String getWeather = openApiService.getWeatherString(diaryInfoDto.getArea());
+
+        HashMap<String, Object> weatherInfo = openApiService.jsonParseString(getWeather);
         Weather weather = new Weather();
         weather.setDate(LocalDate.now());
         weather.setIcon(weatherInfo.get("icon").toString());
         weather.setTemp((Double) weatherInfo.get("temp"));
         weather.setWeather(weatherInfo.get("main").toString());
+
+        System.out.println(diaryInfoDto.getArea());
+        System.out.println(weather);
         return weather;
 
 
