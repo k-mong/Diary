@@ -26,7 +26,7 @@ public class UserService {
             //throw new RuntimeException("이미 존재하는 아이디 입니다."); // 예외발생
             throw  new CustomException(ErrorCode.ALREADY_REGISTER_USER);
         }
-        userRepository.save(    // jpa 의 기본기능 save  ?여기에 변수명 하는 이유 물어보기
+        userRepository.save(    // jpa 의 기본기능 save
                 User.builder()  // 객체생성
                         .email(userJoinRequestDto.getEmail())   // email 은 매개변수로 들어온 email
                         .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
