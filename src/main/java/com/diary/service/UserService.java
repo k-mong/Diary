@@ -3,6 +3,7 @@ package com.diary.service;
 import com.diary.domain.entity.User;
 import com.diary.domain.repository.UserRepository;
 import com.diary.dto.UserInfoDto;
+import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
 import com.diary.exception.CustomException;
 import com.diary.exception.ErrorCode;
@@ -52,13 +53,18 @@ public class UserService {
 
     /**
      * user 정보 가져오기
+     *
      * @param userId
      * @return
      */
-    public Optional<User> findUserInfo(String userId) {
+    public UserInfoResponseDto findUserInfo(String userId) {
         Optional<User> user = userRepository.findByEmail(userId);
         System.out.println("findUserInfo 메서드 실행 "+user);
-        return user;
+        return UserInfoResponseDto.builder()
+                .email(user.get().getEmail())
+                .name(user.get().getName())
+                .phone(user.get().getPhone())
+                .build();
     }
 
 }
