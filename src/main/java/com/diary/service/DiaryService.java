@@ -9,7 +9,6 @@ import com.diary.domain.repository.WeatherRepository;
 import com.diary.dto.DiaryInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -20,7 +19,6 @@ public class DiaryService {
     private final WeatherRepository weatherRepository;
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
-
 
 //    public Diary createDiary(DiaryInfoDto diaryInfoDto) {
 //        // 1. 날씨정보 갖고오기
@@ -51,7 +49,9 @@ public class DiaryService {
 
         // 1-1 이미 있는지 확인
 
+
         if(weatherRepository.findTop1ByDateAndWeatherOrderByDateDesc(LocalDate.now(), weather.getWeather())) {  // 이 부분에서 문제
+
             throw new RuntimeException("날씨정보가 이미 있습니다.");
         } else {
             // 1-2 없을경우, 저장 후 가져오기
@@ -86,6 +86,7 @@ public class DiaryService {
         System.out.println(diaryInfoDto.getArea());
         System.out.println(weather);
         return weather;
+
 
     }
 }

@@ -30,7 +30,8 @@ public class Diary extends BaseEntity{
     private String weather;
     private double temp;
 
-    public void setDateInfo(Weather weather) {
+
+    public void seatDateInfo(Weather weather) {
         this.weather = weather.getWeather();
         this.icon = weather.getIcon();
         this.temp = weather.getTemp();
