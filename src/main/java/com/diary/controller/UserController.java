@@ -1,6 +1,5 @@
 package com.diary.controller;
 
-import com.diary.domain.entity.User;
 import com.diary.dto.UserInfoDto;
 import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
@@ -38,15 +37,15 @@ public class UserController {
             throw new RuntimeException("토큰이 만료되었습니다.");
         }
         String userId = tokenProvider.getUserId(token);
-        User user = userService.findUserInfo(userId).get();
+        UserInfoResponseDto user = userService.findUserInfo(userId);
 
-        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .phone(user.getPhone())
-                .build();
+//        UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
+//                .email(user.getEmail())
+//                .name(user.getName())
+//                .phone(user.getPhone())
+//                .build();
 
-        return ResponseEntity.ok(userInfoResponseDto);
+        return ResponseEntity.ok(user);
     }
 
 }
