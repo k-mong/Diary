@@ -20,61 +20,67 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
 
-//    public Diary createDiary(DiaryInfoDto diaryInfoDto) {
-//        // 1. 날씨정보 갖고오기
-//        Weather weather = getWeatherInfo(diaryInfoDto);
-//
-//        // 1-1 이미 있는지 확인
-//        if(weatherRepository.findTop1ByDateAndWeatherOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea())) {
-//            throw new RuntimeException("날씨정보가 이미 있습니다.");
-//        } else {
-//            // 1-2 없을경우, 저장 후 가져오기
-//            User user = userRepository.findByEmail(diaryInfoDto.getUser_id()).get();
-//
-//            Diary diary = new Diary();
-//            diary.setTitle(diary.getTitle());
-//            diary.setContent(diary.getContent());
-//            diary.setDate(LocalDate.now());
-//            diary.setWeather(weather.getWeather());
-//            diary.setUser(user);
-//
-//        }
-//        // 다이어리 저장
-//        return null;
-//    }
 
-    public Diary createDiary(DiaryInfoDto diaryInfoDto) {
+    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
         // 1. 날씨정보 갖고오기
-        Weather weather = getWeatherInfo(diaryInfoDto);
+        Weather weather = new Weather();
 
         // 1-1 이미 있는지 확인
+        if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
 
-
-        if(weatherRepository.findTop1ByDateAndWeatherOrderByDateDesc(LocalDate.now(), weather.getWeather())) {  // 이 부분에서 문제
-
-            throw new RuntimeException("날씨정보가 이미 있습니다.");
+            weatherRepository.findTop1ByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
         } else {
             // 1-2 없을경우, 저장 후 가져오기
-            User user = userRepository.findByEmail(diaryInfoDto.getUser_id()).get();
-
-            // 다이어리 저장
-            return diaryRepository.save(
-                    Diary.builder()
-                            .title(diaryInfoDto.getTitle())
-                            .content(diaryInfoDto.getContent())
-                            .date(LocalDate.now())
-                            .weather(weather.getWeather())
-                            .user(user)
-                            .build());
-
+            weather = getWeatherInfo(diaryInfoDto.getArea());
         }
 
+            User user = userRepository.findByEmail(userId).get();
+
+            Diary diary = new Diary();
+            diary.setTitle(diaryInfoDto.getTitle());
+            diary.setContent(diaryInfoDto.getContent());
+            diary.setDate(LocalDate.now());
+            diary.setDateInfo(weather);
+            diary.setUser(user);
+
+        // 다이어리 저장
+        return diaryRepository.save(diary);
     }
 
-    public Weather getWeatherInfo (DiaryInfoDto diaryInfoDto) {
+//    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
+//        // 1. 날씨정보 갖고오기
+//        Weather weather = new Weather();
+//
+//        // 1-1 이미 있는지 확인
+//
+//        if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
+//            // 있는 날씨정보 갖고오기
+//            weather = weatherRepository.findTop1ByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea()).get();
+//        } else {
+//            // 1-2 없을경우, 저장 후 가져오기
+//            weather = getWeatherInfo(diaryInfoDto.getArea());
+//        }
+//        User user = userRepository.findByEmail(userId).get();
+//        // 다이어리 저장
+//        return diaryRepository.save(
+//                Diary.builder()
+//                        .title(diaryInfoDto.getTitle())
+//                        .content(diaryInfoDto.getContent())
+//                        .date(LocalDate.now())
+//
+//                        .user(user)
+//                        .build());
+//
+//
+//
+//    }
+
+
+
+    public Weather getWeatherInfo (String area) {
         System.out.println("getWeatherInfo 실행!!");
 
-        String getWeather = openApiService.getWeatherString(diaryInfoDto.getArea());
+        String getWeather = openApiService.getWeatherString(area);
 
         HashMap<String, Object> weatherInfo = openApiService.jsonParseString(getWeather);
         Weather weather = new Weather();
@@ -82,10 +88,9 @@ public class DiaryService {
         weather.setIcon(weatherInfo.get("icon").toString());
         weather.setTemp((Double) weatherInfo.get("temp"));
         weather.setWeather(weatherInfo.get("main").toString());
+        weather.setArea(area);
 
-        System.out.println(diaryInfoDto.getArea());
-        System.out.println(weather);
-        return weather;
+        return weatherRepository.save(weather);
 
 
     }
