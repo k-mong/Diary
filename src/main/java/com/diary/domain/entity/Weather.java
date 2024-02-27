@@ -19,4 +19,5 @@ public class Weather {
     private String icon;
     private String weather;
     private double temp;
+    private String area;
 }

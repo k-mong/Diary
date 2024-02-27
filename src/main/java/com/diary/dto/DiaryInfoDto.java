@@ -10,5 +10,4 @@ public class DiaryInfoDto {
     private String title;
     private String content;
     private String area;
-    private String user_id;
 }
