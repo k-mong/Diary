@@ -7,10 +7,13 @@ import com.diary.domain.repository.DiaryRepository;
 import com.diary.domain.repository.UserRepository;
 import com.diary.domain.repository.WeatherRepository;
 import com.diary.dto.DiaryInfoDto;
+import com.diary.dto.DiaryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +31,8 @@ public class DiaryService {
         // 1-1 이미 있는지 확인
         if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
 
-            weatherRepository.findTop1ByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
+            weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
+
         } else {
             // 1-2 없을경우, 저장 후 가져오기
             weather = getWeatherInfo(diaryInfoDto.getArea());
@@ -45,6 +49,10 @@ public class DiaryService {
 
         // 다이어리 저장
         return diaryRepository.save(diary);
+    }
+
+    public Diary updateDiary(){
+        return null;
     }
 
 //    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
@@ -67,7 +75,9 @@ public class DiaryService {
 //                        .title(diaryInfoDto.getTitle())
 //                        .content(diaryInfoDto.getContent())
 //                        .date(LocalDate.now())
-//
+//                        .icon(weather.getIcon())
+//                        .temp(weather.getTemp())
+//                        .weather(weather.getWeather())
 //                        .user(user)
 //                        .build());
 //
@@ -75,10 +85,29 @@ public class DiaryService {
 //
 //    }
 
+    public List<DiaryResponseDto> diaryList() {
+        List<Diary>diarys = diaryRepository.findAll();
+        List<DiaryResponseDto> diaryResponseDtos = new ArrayList<>();
+        for (Diary diary : diarys) {
+            DiaryResponseDto diaryResponseDto = DiaryResponseDto.builder()
+                    .title(diary.getTitle())
+                    .content(diary.getContent())
+                    .icon(diary.getIcon())
+                    .temp(diary.getTemp())
+                    .weather(diary.getWeather())
+                    .date(diary.getDate())
+                    .user(diary.getUser())
+                    .build();
+
+            diaryResponseDtos.add(diaryResponseDto);
+        }
+        return diaryResponseDtos;
+
+    }
+
 
 
     public Weather getWeatherInfo (String area) {
-        System.out.println("getWeatherInfo 실행!!");
 
         String getWeather = openApiService.getWeatherString(area);
 

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface WeatherRepository extends JpaRepository<Weather, LocalDate> {
 
     boolean existsByDateAndArea(LocalDate date, String area);
-    Optional<Weather> findTop1ByDateAndAreaOrderByDateDesc(LocalDate date, String area);
+    Optional<Weather> findTopByDateAndAreaOrderByDateDesc(LocalDate date, String area);
 }
