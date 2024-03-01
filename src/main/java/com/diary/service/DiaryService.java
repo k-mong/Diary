@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +32,8 @@ public class DiaryService {
         // 1-1 이미 있는지 확인
         if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
 
-            weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
-
+            Optional<Weather> findWeather = weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
+            weather = findWeather.get();
         } else {
             // 1-2 없을경우, 저장 후 가져오기
             weather = getWeatherInfo(diaryInfoDto.getArea());
@@ -85,8 +86,9 @@ public class DiaryService {
 //
 //    }
 
-    public List<DiaryResponseDto> diaryList() {
-        List<Diary>diarys = diaryRepository.findAll();
+    public List<DiaryResponseDto> diaryList(String userId) {
+        Optional<User> user = userRepository.findByEmail(userId);
+        List<Diary>diarys = diaryRepository.findByUser(user.get());
         List<DiaryResponseDto> diaryResponseDtos = new ArrayList<>();
         for (Diary diary : diarys) {
             DiaryResponseDto diaryResponseDto = DiaryResponseDto.builder()
@@ -96,12 +98,26 @@ public class DiaryService {
                     .temp(diary.getTemp())
                     .weather(diary.getWeather())
                     .date(diary.getDate())
-                    .user(diary.getUser())
+                    .user(user.get())
                     .build();
 
             diaryResponseDtos.add(diaryResponseDto);
         }
         return diaryResponseDtos;
+
+    }
+
+    public String deleteDiary(Long diaryId,String userId) {
+        Optional<User> user = userRepository.findByEmail(userId);
+        Optional<Diary> diary = diaryRepository.findByIdAndUser(diaryId, user.get());
+
+
+        if(diary.isPresent()) {
+            diaryRepository.deleteById(diaryId);
+            return "다이어리 삭제 완료";
+        } else {
+            throw new RuntimeException("다이어리가 존재하지 않습니다.");
+        }
 
     }
 

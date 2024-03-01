@@ -31,9 +31,24 @@ public class DiaryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<DiaryResponseDto>> diaryList() {
-        List<DiaryResponseDto> diaryList = diaryService.diaryList();
+    public ResponseEntity<List<DiaryResponseDto>> diaryList(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+        if(!tokenProvider.checkValidToken(token)){
+            throw new RuntimeException("토큰이 만료되었습니다.");
+        }
+        String userId = tokenProvider.getUserId(token);
+        List<DiaryResponseDto> diaryList = diaryService.diaryList(userId);
         return ResponseEntity.ok(diaryList);
 
+    }
+
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteDiary(@RequestHeader(name = "X-AUTH-TOKEN") String token, @PathVariable Long id) {
+        if(!tokenProvider.checkValidToken(token)) {
+            throw new RuntimeException("토큰이 만료되었습니다.");
+        }
+        String userId = tokenProvider.getUserId(token);
+        String result = diaryService.deleteDiary(id, userId);
+
+        return ResponseEntity.ok(result);
     }
 }
