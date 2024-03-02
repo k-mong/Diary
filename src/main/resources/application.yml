@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       #3.x 부터 설정파일에서 제거 use-new-id-generator-mappings: false
     show-sql: true
 
