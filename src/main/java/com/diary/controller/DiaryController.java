@@ -3,6 +3,7 @@ package com.diary.controller;
 import com.diary.domain.entity.Diary;
 import com.diary.dto.DiaryInfoDto;
 import com.diary.dto.DiaryResponseDto;
+import com.diary.dto.DiaryUpdateDto;
 import com.diary.security.TokenProvider;
 import com.diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,18 @@ public class DiaryController {
         }
         String userId = tokenProvider.getUserId(token);
         String result = diaryService.deleteDiary(id, userId);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateDiary(@RequestHeader(name = "X-AUTH_TOKEN") String token, @PathVariable Long id, DiaryUpdateDto diaryUpdateDto) {
+        if(!tokenProvider.checkValidToken(token)) {
+            throw new RuntimeException("토큰이 만료되었습니다.");
+        }
+
+        String userId = tokenProvider.getUserId(token);
+        String result = diaryService.updateDiary(diaryUpdateDto, userId, id);
 
         return ResponseEntity.ok(result);
     }

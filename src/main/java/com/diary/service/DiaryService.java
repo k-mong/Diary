@@ -8,8 +8,12 @@ import com.diary.domain.repository.UserRepository;
 import com.diary.domain.repository.WeatherRepository;
 import com.diary.dto.DiaryInfoDto;
 import com.diary.dto.DiaryResponseDto;
+import com.diary.dto.DiaryUpdateDto;
+import com.diary.exception.CustomException;
+import com.diary.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,38 +29,7 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
 
 
-    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
-        // 1. 날씨정보 갖고오기
-        Weather weather = new Weather();
-
-        // 1-1 이미 있는지 확인
-        if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
-
-            Optional<Weather> findWeather = weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
-            weather = findWeather.get();
-        } else {
-            // 1-2 없을경우, 저장 후 가져오기
-            weather = getWeatherInfo(diaryInfoDto.getArea());
-        }
-
-            User user = userRepository.findByEmail(userId).get();
-
-            Diary diary = new Diary();
-            diary.setTitle(diaryInfoDto.getTitle());
-            diary.setContent(diaryInfoDto.getContent());
-            diary.setDate(LocalDate.now());
-            diary.setDateInfo(weather);
-            diary.setUser(user);
-
-        // 다이어리 저장
-        return diaryRepository.save(diary);
-    }
-
-    public Diary updateDiary(){
-        return null;
-    }
-
-//    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
+    //    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
 //        // 1. 날씨정보 갖고오기
 //        Weather weather = new Weather();
 //
@@ -86,6 +59,33 @@ public class DiaryService {
 //
 //    }
 
+    public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
+        // 1. 날씨정보 갖고오기
+        Weather weather = new Weather();
+
+        // 1-1 이미 있는지 확인
+        if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
+
+            Optional<Weather> findWeather = weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
+            weather = findWeather.get();
+        } else {
+            // 1-2 없을경우, 저장 후 가져오기
+            weather = getWeatherInfo(diaryInfoDto.getArea());
+        }
+
+            User user = userRepository.findByEmail(userId).get();
+
+            Diary diary = new Diary();
+            diary.setTitle(diaryInfoDto.getTitle());
+            diary.setContent(diaryInfoDto.getContent());
+            diary.setDate(LocalDate.now());
+            diary.setDateInfo(weather);
+            diary.setUser(user);
+
+        // 다이어리 저장
+        return diaryRepository.save(diary);
+    }
+
     public List<DiaryResponseDto> diaryList(String userId) {
         Optional<User> user = userRepository.findByEmail(userId);
         List<Diary>diarys = diaryRepository.findByUser(user.get());
@@ -107,16 +107,32 @@ public class DiaryService {
 
     }
 
+    public String updateDiary(DiaryUpdateDto diaryUpdateDto, String userId, Long diaryId){
+        Optional<User> user = userRepository.findByEmail(userId);
+        Optional<Diary> findDiary = diaryRepository.findByIdAndUser(diaryId, user.get());
+
+        if(!findDiary.isPresent()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_DIARY);
+        } else {
+            Diary diary = findDiary.get();
+            diary.setTitle(diaryUpdateDto.getTitle());
+            diary.setContent(diaryUpdateDto.getContent());
+
+            diaryRepository.save(diary);
+        }
+
+        return "다이어리 수정 완료";
+    }
+
     public String deleteDiary(Long diaryId,String userId) {
         Optional<User> user = userRepository.findByEmail(userId);
         Optional<Diary> diary = diaryRepository.findByIdAndUser(diaryId, user.get());
 
-
-        if(diary.isPresent()) {
+        if(!diary.isPresent()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_DIARY);
+        } else {
             diaryRepository.deleteById(diaryId);
             return "다이어리 삭제 완료";
-        } else {
-            throw new RuntimeException("다이어리가 존재하지 않습니다.");
         }
 
     }
