@@ -22,20 +22,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;  // @Bean 을 등록해야 사용 가능
 
-    public String join(UserInfoDto userJoinRequestDto) {     // String 탑입의 join 은( 매개변수로 userJoinRequestDto 를 받는다)
-        if(userRepository.findByEmail(userJoinRequestDto.getEmail()).isPresent()) { //만약(userRepository 안에 finByEmail(매개변수로 들어온 값의 email) 이 같다면)
+    public User join(UserInfoDto userJoinRequestDto) {     // String 탑입의 join 은( 매개변수로 userJoinRequestDto 를 받는다)
+        if (userRepository.findByEmail(userJoinRequestDto.getEmail()).isPresent()) { //만약(userRepository 안에 finByEmail(매개변수로 들어온 값의 email) 이 같다면)
             //throw new RuntimeException("이미 존재하는 아이디 입니다."); // 예외발생
-            throw  new CustomException(ErrorCode.ALREADY_REGISTER_USER);
-        }
-        userRepository.save(    // jpa 의 기본기능 save
-                User.builder()  // 객체생성
-                        .email(userJoinRequestDto.getEmail())   // email 은 매개변수로 들어온 email
-                        .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
-                        .name(userJoinRequestDto.getName())
-                        .phone(userJoinRequestDto.getPhone())
-                        .build());
+            throw new CustomException(ErrorCode.ALREADY_REGISTER_USER);
+        } else {
+            User user = userRepository.save(    // jpa 의 기본기능 save
+                    User.builder()  // 객체생성
+                            .email(userJoinRequestDto.getEmail())   // email 은 매개변수로 들어온 email
+                            .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
+                            .name(userJoinRequestDto.getName())
+                            .phone(userJoinRequestDto.getPhone())
+                            .build());
 
-        return "회원가입 완료!";
+        return user;
+        }
     }
 
     public String login(UserLoginDto userLoginDto) {

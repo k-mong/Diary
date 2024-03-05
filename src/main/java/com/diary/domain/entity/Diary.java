@@ -1,5 +1,6 @@
 package com.diary.domain.entity;
 
+import com.diary.dto.DiaryUpdateDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,11 @@ public class Diary extends BaseEntity{
         this.icon = weather.getIcon();
         this.temp = weather.getTemp();
         this.date = weather.getDate();
+    }
+
+    public void update(DiaryUpdateDto diaryUpdateDto) {
+        this.title = diaryUpdateDto.getTitle();
+        this.content = diaryUpdateDto.getContent();
     }
 
 }

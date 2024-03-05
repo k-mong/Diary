@@ -1,5 +1,6 @@
 package com.diary.controller;
 
+import com.diary.domain.entity.User;
 import com.diary.dto.UserInfoDto;
 import com.diary.dto.UserInfoResponseDto;
 import com.diary.dto.UserLoginDto;
@@ -18,8 +19,8 @@ public class UserController {
     private final TokenProvider tokenProvider;
 
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody UserInfoDto userRequestDto) {    // HTTP응답을 나타내는 클래스 <Body의 타입>
-        String result = userService.join(userRequestDto);
+    public ResponseEntity<User> join(@RequestBody UserInfoDto userRequestDto) {    // HTTP응답을 나타내는 클래스 <Body의 타입>
+        User result = userService.join(userRequestDto);
         return ResponseEntity.ok(result);   // 200번 코드와 resul 를 반환
     }
 
