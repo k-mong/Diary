@@ -9,10 +9,15 @@ import com.diary.domain.repository.WeatherRepository;
 import com.diary.dto.DiaryInfoDto;
 import com.diary.dto.DiaryResponseDto;
 import com.diary.dto.DiaryUpdateDto;
+import com.diary.exception.CustomException;
+import com.diary.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,11 +63,24 @@ public class DiaryService {
 //    }
 
     public Diary createDiary(DiaryInfoDto diaryInfoDto, String userId) {
+        LocalDate date = LocalDate.now();
+
+        if(!diaryInfoDto.getDate().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            date = LocalDate.parse(diaryInfoDto.getDate(), formatter);
+
+            // 날짜 유효성 체크
+            if(LocalDate.now().isAfter(date)) {
+                // 오늘 이후의 날짜 입니다.
+            }
+            // 숫자만 들어오는지
+        }
+
         // 1. 날씨정보 갖고오기
         Weather weather = new Weather();
 
         // 1-1 이미 있는지 확인
-        if(weatherRepository.existsByDateAndArea(LocalDate.now(), diaryInfoDto.getArea())) {
+        if(weatherRepository.existsByDateAndArea(date, diaryInfoDto.getArea())) {
 
             Optional<Weather> findWeather = weatherRepository.findTopByDateAndAreaOrderByDateDesc(LocalDate.now(), diaryInfoDto.getArea());
             weather = findWeather.get();
@@ -110,7 +128,7 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findById(diaryId).get();
 
         if(!findDiary.getUser().equals(user)) {
-            throw new RuntimeException("유저가 없습니다.");
+            throw new CustomException(ErrorCode.NOT_FOUND_ID);
         }
 
         // 방법 1. Setter
@@ -146,13 +164,25 @@ public class DiaryService {
         Diary diary = diaryRepository.findByIdAndUser(diaryId, user).get();
 
         if(!diary.getUser().equals(user)) {
-            throw new RuntimeException("유저가 없어요");
+            throw new CustomException(ErrorCode.NOT_FOUND_ID);
         }
 
             diaryRepository.deleteById(diaryId);
             return "다이어리 삭제 완료";
 
 
+    }
+
+    @Transactional
+    @Scheduled(cron = " 0 50 15 * * *")   //초 분 시 일 월 요일
+    public void scheduledGetWeatherInfo() {
+        // 주요도시 List 부산, 서울, 대구, 광주
+        List<String> cities = new ArrayList<>();
+        cities.add("seoul");
+        // for
+        for(String city : cities) {
+            Weather weather = getWeatherInfo(city);
+        }
     }
 
 

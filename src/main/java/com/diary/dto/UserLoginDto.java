@@ -1,10 +1,10 @@
 package com.diary.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
+@Setter
 public class UserLoginDto {
 
     private String email;
